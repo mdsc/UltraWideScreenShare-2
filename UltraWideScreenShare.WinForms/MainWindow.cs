@@ -14,6 +14,7 @@ namespace UltraWideScreenShare.WinForms
         private Color _frameColor = Color.FromArgb(255, 53, 89, 224); //#3559E0
         const int _borderWidth = 6;
         private bool _showMagnifierScheduled = true;
+        private bool _isFocused = true;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,6 +28,24 @@ namespace UltraWideScreenShare.WinForms
             base.OnCreateControl();
 
             this.InitializeMainWindowStyle();
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            _isFocused = true;
+            TitleBar.Visible = true;
+            Padding = new Padding(_borderWidth, _borderWidth, _borderWidth, _borderWidth);
+            Invalidate();
+        }
+
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+            _isFocused = false;
+            TitleBar.Visible = false;
+            Padding = new Padding(0);
+            Invalidate();
         }
 
         private void InitializePaddingsForBorders()
@@ -101,19 +120,22 @@ namespace UltraWideScreenShare.WinForms
 
             base.WndProc(ref m);
 
-            if (message == WM_NCHITTEST)
+            if (message == WM_NCHITTEST && _isFocused)
             {
                 this.TryResize(ref m, _borderWidth);
             }
         }
 
         private void MainWindow_Paint(object sender, PaintEventArgs e)
-        { 
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
-                _frameColor, _borderWidth, ButtonBorderStyle.Solid,
-                _frameColor, _borderWidth, ButtonBorderStyle.Solid,
-                _frameColor, _borderWidth, ButtonBorderStyle.Solid,
-                _frameColor, _borderWidth, ButtonBorderStyle.Solid);
+        {
+            if (_isFocused)
+            {
+                ControlPaint.DrawBorder(e.Graphics, ClientRectangle,
+                    _frameColor, _borderWidth, ButtonBorderStyle.Solid,
+                    _frameColor, _borderWidth, ButtonBorderStyle.Solid,
+                    _frameColor, _borderWidth, ButtonBorderStyle.Solid,
+                    _frameColor, _borderWidth, ButtonBorderStyle.Solid);
+            }
         }
 
         private void TitleBar_Paint(object sender, PaintEventArgs e)
