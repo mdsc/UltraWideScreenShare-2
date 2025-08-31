@@ -15,6 +15,7 @@ namespace UltraWideScreenShare.WinForms
         const int _borderWidth = 6;
         private bool _showMagnifierScheduled = true;
         private bool _isFocused = true;
+        private bool _isInitialized = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -60,10 +61,16 @@ namespace UltraWideScreenShare.WinForms
         {
             MaximizedBounds = new Rectangle(Point.Empty, Screen.GetWorkingArea(Location).Size);
             base.OnMove(e);
+            if (_isInitialized && WindowState == FormWindowState.Normal)
+            {
+                Settings.SaveWindowPosition(this);
+            }
         }
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            Settings.RestoreWindowPosition(this);
             _magnifier = new Magnifier(magnifierPanel.Handle);
+            _isInitialized = true;
             _dispatcherTimer.Start();
             _dispatcherTimer.Tick += (s, a) =>
             {
@@ -88,7 +95,14 @@ namespace UltraWideScreenShare.WinForms
 
         private void MainWindow_ResizeBegin(object sender, EventArgs e) => _magnifier.HideMagnifier();
 
-        private void MainWindow_ResizeEnd(object sender, EventArgs e) => _showMagnifierScheduled = true;
+        private void MainWindow_ResizeEnd(object sender, EventArgs e)
+        {
+            _showMagnifierScheduled = true;
+            if (_isInitialized && WindowState == FormWindowState.Normal)
+            {
+                Settings.SaveWindowPosition(this);
+            }
+        }
 
 
         private void TittleButton_MouseDown(object sender, MouseEventArgs e)
@@ -151,6 +165,7 @@ namespace UltraWideScreenShare.WinForms
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            Settings.SaveWindowPosition(this);
             _dispatcherTimer.Stop();
             _dispatcherTimer.Dispose();
             base.OnClosing(e);
