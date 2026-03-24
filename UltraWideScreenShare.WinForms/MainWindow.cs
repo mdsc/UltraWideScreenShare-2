@@ -7,15 +7,22 @@ namespace UltraWideScreenShare.WinForms
 {
     public partial class MainWindow : Form
     {
+        private const int TOGGLE_COLLAPSED_WIDTH = 16;
+
+
         private readonly Timer _dispatcherTimer = new Timer() { Interval = 2 }; //30fps
         private Point _tittleBarLocation = new Point();
         private Magnifier _magnifier;
         private bool _isTransparent = false;
         private Color _frameColor = Color.FromArgb(255, 53, 89, 224); //#3559E0
-        const int _borderWidth = 6;
+        const int _borderWidth = 4;
         private bool _showMagnifierScheduled = true;
         private bool _isFocused = true;
         private bool _isInitialized = false;
+
+        private bool _titleBarCollapsed = false;
+        private int _titleBarExpandedWidth;
+        private int _toggleButtonExpandedWidth;
         public MainWindow()
         {
             InitializeComponent();
@@ -53,8 +60,8 @@ namespace UltraWideScreenShare.WinForms
         {
             Padding = new Padding(_borderWidth, _borderWidth, _borderWidth, _borderWidth);
             TitleBar.Width += (_borderWidth * 2);
-            TitleBar.Height += (_borderWidth);
-            TitleBar.Padding = new Padding(_borderWidth, 0, _borderWidth, _borderWidth);
+            TitleBar.Height += (_borderWidth * 2);
+            TitleBar.Padding = new Padding(_borderWidth, _borderWidth, _borderWidth, _borderWidth);
         }
 
         protected override void OnMove(EventArgs e)
@@ -118,6 +125,7 @@ namespace UltraWideScreenShare.WinForms
         const int WM_NCCALCSIZE = 0x0083;
         const int WM_NCACTIVATE = 0x0086;
         const int WM_NCHITTEST = 0x0084;
+
         protected override void WndProc(ref Message m)
         {
             var message = m.Msg;
@@ -156,7 +164,7 @@ namespace UltraWideScreenShare.WinForms
         {
             ControlPaint.DrawBorder(e.Graphics, TitleBar.ClientRectangle,
                _frameColor, _borderWidth, ButtonBorderStyle.Solid,
-               _frameColor, 0, ButtonBorderStyle.Solid,
+               _frameColor, _borderWidth, ButtonBorderStyle.Solid,
                _frameColor, _borderWidth, ButtonBorderStyle.Solid,
                _frameColor, _borderWidth, ButtonBorderStyle.Solid);
         }
@@ -191,22 +199,69 @@ namespace UltraWideScreenShare.WinForms
             }
         }
 
-        private void DragButton_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                _tittleBarLocation = e.Location;
-            }
-        }
+
 
         private void DragButton_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
                 TitleBar.Left = Math.Clamp(value: e.X + TitleBar.Left - _tittleBarLocation.X,
-                    min: 0, max: Width - TitleBar.Width);
+                    min: _borderWidth / 2, max: Width - TitleBar.Width - _borderWidth / 2);
 
             }
         }
+
+
+        private void toggleButton_Click(object sender, EventArgs e)
+        {
+            ToggleTitleBarCollapsed();
+        }
+
+        private void ToggleTitleBarCollapsed()
+        {
+            dragButton.Visible = _titleBarCollapsed;
+            titleButton.Visible = _titleBarCollapsed;
+            minimizeButton.Visible = _titleBarCollapsed;
+            maximizeButton.Visible = _titleBarCollapsed;
+            closeButton.Visible = _titleBarCollapsed;
+
+            if (_titleBarCollapsed)
+            {
+                toggleButton.Image = Properties.Resources.toggle_up;
+
+                TitleBar.Width = _titleBarExpandedWidth;
+                TitleBar.Height = dragButton.Height + _borderWidth * 2;
+                TitleBar.Left = Math.Clamp(TitleBar.Left - (TitleBar.Width - toggleButton.Width)/2, 0, Width - TitleBar.Width);
+
+                toggleButton.Width = _toggleButtonExpandedWidth;
+                toggleButton.Height = titleButton.Height;
+
+                _titleBarCollapsed = false;
+            }
+            else
+                {
+                    _toggleButtonExpandedWidth = toggleButton.Width;
+                    _titleBarExpandedWidth = TitleBar.Width;
+
+                    bool isRightAligned = TitleBar.Left >= Width - TitleBar.Width - _borderWidth;
+                    bool isLeftAligned = TitleBar.Left <= _borderWidth;
+
+                    toggleButton.Image = Properties.Resources.toggle_dn;
+
+                    toggleButton.Width = 16;
+                    toggleButton.Height = 10;
+
+                    TitleBar.Height = toggleButton.Height + _borderWidth * 2;
+                    TitleBar.Width = toggleButton.Width + _borderWidth * 2;
+
+                    if (isRightAligned)
+                        TitleBar.Left = Width - TitleBar.Width - _borderWidth / 2;
+                    else if (!isLeftAligned)
+                        TitleBar.Left += (_titleBarExpandedWidth - toggleButton.Width) / 2;
+
+                    _titleBarCollapsed = true;
+                }
+        }
+
     }
 }

@@ -34,9 +34,9 @@ namespace UltraWideScreenShare.WinForms
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             magnifierPanel = new Panel();
             TitleBar = new FlowLayoutPanel();
-            shareButton = new Button();
-            titleButton = new Button();
             dragButton = new Button();
+            titleButton = new Button();
+            toggleButton = new Button();
             minimizeButton = new Button();
             maximizeButton = new Button();
             closeButton = new Button();
@@ -47,46 +47,49 @@ namespace UltraWideScreenShare.WinForms
             // 
             magnifierPanel.BackColor = Color.Transparent;
             magnifierPanel.Dock = DockStyle.Fill;
-            magnifierPanel.Location = new Point(8, 8);
+            magnifierPanel.Location = new Point(7, 8);
             magnifierPanel.Margin = new Padding(0);
             magnifierPanel.Name = "magnifierPanel";
-            magnifierPanel.Size = new Size(1469, 944);
+            magnifierPanel.Size = new Size(1357, 884);
             magnifierPanel.TabIndex = 0;
             // 
             // TitleBar
             // 
+            TitleBar.Anchor = AnchorStyles.Top;
             TitleBar.BackColor = Color.White;
-            TitleBar.Controls.Add(shareButton);
-            TitleBar.Controls.Add(titleButton);
             TitleBar.Controls.Add(dragButton);
+            TitleBar.Controls.Add(titleButton);
+            TitleBar.Controls.Add(toggleButton);
             TitleBar.Controls.Add(minimizeButton);
             TitleBar.Controls.Add(maximizeButton);
             TitleBar.Controls.Add(closeButton);
-            TitleBar.Location = new Point(335, 0);
+            TitleBar.Location = new Point(392, 6);
             TitleBar.Margin = new Padding(0);
             TitleBar.Name = "TitleBar";
-            TitleBar.Size = new Size(779, 64);
+            TitleBar.Size = new Size(633, 44);
             TitleBar.TabIndex = 1;
             TitleBar.WrapContents = false;
             TitleBar.Paint += TitleBar_Paint;
             // 
-            // shareButton
+            // dragButton
             // 
-            shareButton.BackColor = Color.FromArgb(229, 229, 229);
-            shareButton.BackgroundImageLayout = ImageLayout.None;
-            shareButton.FlatAppearance.BorderColor = Color.FromArgb(229, 229, 229);
-            shareButton.FlatAppearance.BorderSize = 0;
-            shareButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(229, 229, 229);
-            shareButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
-            shareButton.FlatStyle = FlatStyle.Flat;
-            shareButton.Image = Properties.Resources.share;
-            shareButton.Location = new Point(0, 0);
-            shareButton.Margin = new Padding(0);
-            shareButton.Name = "shareButton";
-            shareButton.Size = new Size(81, 64);
-            shareButton.TabIndex = 5;
-            shareButton.UseVisualStyleBackColor = false;
-            shareButton.MouseDown += TittleButton_MouseDown;
+            dragButton.Anchor = AnchorStyles.None;
+            dragButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            dragButton.BackColor = Color.FromArgb(229, 229, 229);
+            dragButton.BackgroundImageLayout = ImageLayout.None;
+            dragButton.FlatAppearance.BorderColor = Color.FromArgb(229, 229, 229);
+            dragButton.FlatAppearance.BorderSize = 0;
+            dragButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(229, 229, 229);
+            dragButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
+            dragButton.FlatStyle = FlatStyle.Flat;
+            dragButton.Image = Properties.Resources.drag;
+            dragButton.Location = new Point(0, 0);
+            dragButton.Margin = new Padding(0);
+            dragButton.Name = "dragButton";
+            dragButton.Size = new Size(30, 44);
+            dragButton.TabIndex = 3;
+            dragButton.UseVisualStyleBackColor = false;
+            dragButton.MouseMove += DragButton_MouseMove;
             // 
             // titleButton
             // 
@@ -99,33 +102,32 @@ namespace UltraWideScreenShare.WinForms
             titleButton.FlatStyle = FlatStyle.Flat;
             titleButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             titleButton.ImageAlign = ContentAlignment.MiddleRight;
-            titleButton.Location = new Point(81, 0);
+            titleButton.Location = new Point(30, 0);
             titleButton.Margin = new Padding(0);
             titleButton.Name = "titleButton";
-            titleButton.Size = new Size(374, 64);
+            titleButton.Size = new Size(363, 44);
             titleButton.TabIndex = 4;
             titleButton.Text = "Ultra Wide Screen Share 2.0";
             titleButton.UseVisualStyleBackColor = false;
             titleButton.MouseDown += TittleButton_MouseDown;
             // 
-            // dragButton
+            // toggleButton
             // 
-            dragButton.BackColor = Color.FromArgb(229, 229, 229);
-            dragButton.BackgroundImageLayout = ImageLayout.None;
-            dragButton.FlatAppearance.BorderColor = Color.FromArgb(229, 229, 229);
-            dragButton.FlatAppearance.BorderSize = 0;
-            dragButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(229, 229, 229);
-            dragButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
-            dragButton.FlatStyle = FlatStyle.Flat;
-            dragButton.Image = Properties.Resources.drag;
-            dragButton.Location = new Point(455, 0);
-            dragButton.Margin = new Padding(0);
-            dragButton.Name = "dragButton";
-            dragButton.Size = new Size(81, 64);
-            dragButton.TabIndex = 3;
-            dragButton.UseVisualStyleBackColor = false;
-            dragButton.MouseDown += DragButton_MouseDown;
-            dragButton.MouseMove += DragButton_MouseMove;
+            toggleButton.BackColor = Color.White;
+            toggleButton.BackgroundImageLayout = ImageLayout.None;
+            toggleButton.FlatAppearance.BorderColor = Color.White;
+            toggleButton.FlatAppearance.BorderSize = 0;
+            toggleButton.FlatAppearance.MouseDownBackColor = Color.FromArgb(229, 229, 229);
+            toggleButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
+            toggleButton.FlatStyle = FlatStyle.Flat;
+            toggleButton.Image = Properties.Resources.toggle_up;
+            toggleButton.Location = new Point(393, 0);
+            toggleButton.Margin = new Padding(0);
+            toggleButton.Name = "toggleButton";
+            toggleButton.Size = new Size(60, 44);
+            toggleButton.TabIndex = 5;
+            toggleButton.UseVisualStyleBackColor = false;
+            toggleButton.Click += toggleButton_Click;
             // 
             // minimizeButton
             // 
@@ -137,10 +139,10 @@ namespace UltraWideScreenShare.WinForms
             minimizeButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
             minimizeButton.FlatStyle = FlatStyle.Flat;
             minimizeButton.Image = Properties.Resources.minimize;
-            minimizeButton.Location = new Point(536, 0);
+            minimizeButton.Location = new Point(453, 0);
             minimizeButton.Margin = new Padding(0);
             minimizeButton.Name = "minimizeButton";
-            minimizeButton.Size = new Size(81, 64);
+            minimizeButton.Size = new Size(60, 44);
             minimizeButton.TabIndex = 2;
             minimizeButton.UseVisualStyleBackColor = false;
             minimizeButton.Click += minimizeButton_Click;
@@ -155,10 +157,10 @@ namespace UltraWideScreenShare.WinForms
             maximizeButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(229, 229, 229);
             maximizeButton.FlatStyle = FlatStyle.Flat;
             maximizeButton.Image = Properties.Resources.maximize;
-            maximizeButton.Location = new Point(617, 0);
+            maximizeButton.Location = new Point(513, 0);
             maximizeButton.Margin = new Padding(0);
             maximizeButton.Name = "maximizeButton";
-            maximizeButton.Size = new Size(81, 64);
+            maximizeButton.Size = new Size(60, 44);
             maximizeButton.TabIndex = 1;
             maximizeButton.UseVisualStyleBackColor = false;
             maximizeButton.Click += maximizeButton_Click;
@@ -173,20 +175,20 @@ namespace UltraWideScreenShare.WinForms
             closeButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(232, 17, 35);
             closeButton.FlatStyle = FlatStyle.Flat;
             closeButton.Image = Properties.Resources.dismiss;
-            closeButton.Location = new Point(698, 0);
+            closeButton.Location = new Point(573, 0);
             closeButton.Margin = new Padding(0);
             closeButton.Name = "closeButton";
-            closeButton.Size = new Size(81, 64);
+            closeButton.Size = new Size(60, 44);
             closeButton.TabIndex = 0;
             closeButton.UseVisualStyleBackColor = false;
             closeButton.Click += closeButton_Click;
             // 
             // MainWindow
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(12F, 30F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Magenta;
-            ClientSize = new Size(1485, 960);
+            ClientSize = new Size(1371, 900);
             ControlBox = false;
             Controls.Add(TitleBar);
             Controls.Add(magnifierPanel);
@@ -194,9 +196,9 @@ namespace UltraWideScreenShare.WinForms
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(5, 6, 5, 6);
-            MinimumSize = new Size(928, 427);
+            MinimumSize = new Size(857, 400);
             Name = "MainWindow";
-            Padding = new Padding(8);
+            Padding = new Padding(7, 8, 7, 8);
             Text = "Ultra Wide Screen Share 2.0";
             TopMost = true;
             TransparencyKey = Color.Magenta;
@@ -217,6 +219,6 @@ namespace UltraWideScreenShare.WinForms
         private Button minimizeButton;
         private Button titleButton;
         private Button dragButton;
-        private Button shareButton;
+        private Button toggleButton;
     }
 }
