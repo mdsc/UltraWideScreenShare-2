@@ -18,7 +18,7 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: UltraWideScreenShare2.sln 
+      Solution_Name: UltraWideScreenShare2.slnx 
       Project_Path: UltraWideScreenShare.Winforms\UltraWideScreenShare.Winforms.csproj     
       Project_Dir: UltraWideScreenShare.Winforms 
 
@@ -32,7 +32,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 10.0.x
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
@@ -51,12 +51,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: UltraWideScreenShare2-${{ matrix.rid }}
-        path: ${{ env.Project_Dir }}\bin\${{ matrix.configuration }}\net6.0-windows\${{ matrix.rid }}\publish\
+        path: ${{ env.Project_Dir }}\bin\${{ matrix.configuration }}\net10.0-windows7.0\${{ matrix.rid }}\publish\
         compression-level: 1
   
-    - name: Perform a Pester test from the command-line
+    - name: Compress build artifacts
       shell: pwsh
-      run: Compress-Archive -Path ${{ env.Project_Dir }}\bin\${{ matrix.configuration }}\net6.0-windows\${{ matrix.rid }}\publish\* -Destination UltraWideScreenShare2-${{ matrix.rid }}.zip      
+      run: Compress-Archive -Path ${{ env.Project_Dir }}\bin\${{ matrix.configuration }}\net10.0-windows7.0\${{ matrix.rid }}\publish\* -Destination UltraWideScreenShare2-${{ matrix.rid }}.zip      
 
     - name: Release
       uses: softprops/action-gh-release@v1
